@@ -41,6 +41,7 @@ struct ContentView: View {
     }
 }
 
+// Where the tab buttons are edited
 struct CustomTabView: View {
     @Binding var selectedTab: Tab
     var body: some View {
@@ -58,9 +59,10 @@ struct CustomTabView: View {
                 }
                 .foregroundColor(selectedTab == .first ? .blue : .primary)
             }
+            // This is the main circular button to add how much is being consumed
             Spacer()
             Button {
-        
+                
             } label: {
                 ZStack{
                     Circle()
@@ -95,29 +97,54 @@ struct CustomTabView: View {
 
 struct Item: Identifiable {
     var id = UUID()
-    let type: String
-    let value: Double
+    let Day: String
+    let Water: Double
 }
 
     struct HomeView: View{
         let items: [Item] = [
-            Item(type:"M", value: 100),
-            Item(type:"T", value: 80),
-            Item(type:"W", value: 70),
-            Item(type:"T", value: 30),
-            Item(type:"F", value: 76),
-            Item(type:"S", value: 90),
-            Item(type:"S", value: 58),
+            Item(Day: "M", Water: 100),
+            Item(Day: "T", Water: 78),
+            Item(Day: "W", Water: 60),
+            Item(Day: "Th", Water: 90),
+            Item(Day: "F", Water: 40),
+            Item(Day: "S", Water: 80),
+            Item(Day: "Su", Water: 10),
         ]
-        
+        @State var currentTab: String = "Week"
         var body: some View{
-            Chart(items) { item in
-                BarMark(
-                    x: .value("Days", item.type),
-                    y: .value("Water", item.value))
+            NavigationStack {
+                VStack {
+                    HStack{
+                        Spacer()
+                        Text("Views")
+                            .fontWeight(.semibold)
+                    
+                        Picker("", selection: $currentTab){
+                            Text("Week")
+                                .tag("Week")
+                            Text("Month")
+                                .tag("Month")
+                        }
+                        .pickerStyle(.segmented)
+                        .padding(.leading,80)
+                        Spacer()
+                    }
+                    
+                    Chart(items) { item in
+                        BarMark(
+                            x: .value("Days", item.Day),
+                            y: .value("Water", item.Water)
+                        )
+                        .foregroundStyle(Color.blue.gradient)
+                    }
+                    .frame(height: 200)
+                }
+                Spacer()
             }
-            .navigationTitle("First")
-            .frame(height: 200)
+            .padding()
+            .navigationTitle("Welcome Back!")
+
         }
     }
     
@@ -125,12 +152,13 @@ struct Item: Identifiable {
         var body: some View {
             Color(.systemGray6)
                 .ignoresSafeArea()
-                .navigationTitle("Second")
+                .navigationTitle("Settings")
         }
     }
     
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+        
     }
 }
